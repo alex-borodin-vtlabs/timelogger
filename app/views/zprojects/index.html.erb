@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Zprojects</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @zprojects.each do |zproject| %>
+      <tr>
+        <td><%= zproject.name %></td>
+        <td><%= link_to 'Show', zproject %></td>
+        <td><%= link_to 'Edit', edit_zproject_path(zproject) %></td>
+        <td><%= link_to 'Destroy', zproject, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Zproject', new_zproject_path %>
