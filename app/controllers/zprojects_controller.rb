@@ -10,6 +10,7 @@ class ZprojectsController < ApplicationController
   # GET /zprojects/1
   # GET /zprojects/1.json
   def show
+  	@ztasks = @zproject.ztask
   end
 
   # GET /zprojects/new

@@ -23,6 +23,9 @@ RSpec.describe ZtasksController, type: :controller do
   # This should return the minimal set of attributes required to create a valid
   # Ztask. As you add validations to Ztask, be sure to
   # adjust the attributes here as well.
+  let(:zproject) {
+  	FactoryGirl.create(:zproject)
+  }
   let(:valid_attributes) {
     FactoryGirl.attributes_for(:ztask)
   }
@@ -35,25 +38,18 @@ RSpec.describe ZtasksController, type: :controller do
   # ZtasksController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET #index" do
-    it "assigns all ztasks as @ztasks" do
-      ztask = Ztask.create! valid_attributes
-      get :index, {}, valid_session
-      expect(assigns(:ztasks)).to eq([ztask])
-    end
-  end
 
   describe "GET #show" do
     it "assigns the requested ztask as @ztask" do
       ztask = Ztask.create! valid_attributes
-      get :show, {:id => ztask.to_param}, valid_session
+      get :show, {id: ztask.to_param, zproject_id:  zproject.id}, valid_session
       expect(assigns(:ztask)).to eq(ztask)
     end
   end
 
   describe "GET #new" do
     it "assigns a new ztask as @ztask" do
-      get :new, {}, valid_session
+      get :new, { zproject_id:  zproject.id}, valid_session
       expect(assigns(:ztask)).to be_a_new(Ztask)
     end
   end
@@ -61,7 +57,7 @@ RSpec.describe ZtasksController, type: :controller do
   describe "GET #edit" do
     it "assigns the requested ztask as @ztask" do
       ztask = Ztask.create! valid_attributes
-      get :edit, {:id => ztask.to_param}, valid_session
+      get :edit, {id: ztask.to_param, zproject_id:  zproject.id}, valid_session
       expect(assigns(:ztask)).to eq(ztask)
     end
   end
@@ -70,30 +66,30 @@ RSpec.describe ZtasksController, type: :controller do
     context "with valid params" do
       it "creates a new Ztask" do
         expect {
-          post :create, {:ztask => valid_attributes}, valid_session
+          post :create, {ztask: valid_attributes, zproject_id: zproject.id}, valid_session
         }.to change(Ztask, :count).by(1)
       end
 
       it "assigns a newly created ztask as @ztask" do
-        post :create, {:ztask => valid_attributes}, valid_session
+        post :create, {ztask: valid_attributes, zproject_id:  zproject.id}, valid_session
         expect(assigns(:ztask)).to be_a(Ztask)
         expect(assigns(:ztask)).to be_persisted
       end
 
       it "redirects to the created ztask" do
-        post :create, {:ztask => valid_attributes}, valid_session
-        expect(response).to redirect_to(Ztask.last)
+        post :create, {ztask: valid_attributes, zproject_id:  zproject.id}, valid_session
+        expect(response).to redirect_to(zproject_ztask_path(zproject, Ztask.last))
       end
     end
 
     context "with invalid params" do
       it "assigns a newly created but unsaved ztask as @ztask" do
-        post :create, {:ztask => invalid_attributes}, valid_session
+        post :create, {ztask: invalid_attributes, zproject_id: zproject.id}, valid_session
         expect(assigns(:ztask)).to be_a_new(Ztask)
       end
 
       it "re-renders the 'new' template" do
-        post :create, {:ztask => invalid_attributes}, valid_session
+        post :create, {ztask: invalid_attributes, zproject_id:  zproject.id}, valid_session
         expect(response).to render_template("new")
       end
     end
@@ -107,34 +103,34 @@ RSpec.describe ZtasksController, type: :controller do
 
       it "updates the requested ztask" do
         ztask = Ztask.create! valid_attributes
-        put :update, {:id => ztask.to_param, :ztask => new_attributes}, valid_session
+        put :update, {id: ztask.to_param, ztask: valid_attributes, zproject_id:   zproject.id}, valid_session
         ztask.reload
         skip("Add assertions for updated state")
       end
 
       it "assigns the requested ztask as @ztask" do
         ztask = Ztask.create! valid_attributes
-        put :update, {:id => ztask.to_param, :ztask => valid_attributes}, valid_session
+        put :update, {id: ztask.to_param, ztask: valid_attributes, zproject_id:   zproject.id}, valid_session
         expect(assigns(:ztask)).to eq(ztask)
       end
 
       it "redirects to the ztask" do
         ztask = Ztask.create! valid_attributes
-        put :update, {:id => ztask.to_param, :ztask => valid_attributes}, valid_session
-        expect(response).to redirect_to(ztask)
+        put :update, {id: ztask.to_param, ztask: valid_attributes, zproject_id:  zproject.id}, valid_session
+        expect(response).to redirect_to(zproject_ztask_path(zproject, ztask))
       end
     end
 
     context "with invalid params" do
       it "assigns the ztask as @ztask" do
         ztask = Ztask.create! valid_attributes
-        put :update, {:id => ztask.to_param, :ztask => invalid_attributes}, valid_session
+        put :update, {id: ztask.to_param, ztask: invalid_attributes, zproject_id: zproject.id}, valid_session
         expect(assigns(:ztask)).to eq(ztask)
       end
 
       it "re-renders the 'edit' template" do
         ztask = Ztask.create! valid_attributes
-        put :update, {:id => ztask.to_param, :ztask => invalid_attributes}, valid_session
+        put :update, {id: ztask.to_param, ztask: invalid_attributes, zproject_id: zproject.id}, valid_session
         expect(response).to render_template("edit")
       end
     end
@@ -144,14 +140,14 @@ RSpec.describe ZtasksController, type: :controller do
     it "destroys the requested ztask" do
       ztask = Ztask.create! valid_attributes
       expect {
-        delete :destroy, {:id => ztask.to_param}, valid_session
+        delete :destroy, {id: ztask.to_param, zproject_id: zproject.id}, valid_session
       }.to change(Ztask, :count).by(-1)
     end
 
     it "redirects to the ztasks list" do
       ztask = Ztask.create! valid_attributes
-      delete :destroy, {:id => ztask.to_param}, valid_session
-      expect(response).to redirect_to(ztasks_url)
+      delete :destroy, {id: ztask.to_param, zproject_id: zproject.id}, valid_session
+      expect(response).to redirect_to(zproject_path(zproject))
     end
   end
 

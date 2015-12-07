@@ -5,10 +5,7 @@
   <%= @ztask.name %>
 </p>
 
-<p>
-  <strong>Zproject:</strong>
-  <%= @ztask.zproject_id %>
-</p>
 
-<%= link_to 'Edit', edit_ztask_path(@ztask) %> |
-<%= link_to 'Back', ztasks_path %>
+
+<%= link_to 'Edit', edit_zproject_ztask_path(@zproject, @ztask) %> |
+<%= link_to 'Back', zproject_path(@zproject) %>

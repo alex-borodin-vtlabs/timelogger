@@ -1,11 +1,7 @@
 class ZtasksController < ApplicationController
+  before_action :load_zproject
   before_action :set_ztask, only: [:show, :edit, :update, :destroy]
 
-  # GET /ztasks
-  # GET /ztasks.json
-  def index
-    @ztasks = Ztask.all
-  end
 
   # GET /ztasks/1
   # GET /ztasks/1.json
@@ -14,7 +10,7 @@ class ZtasksController < ApplicationController
 
   # GET /ztasks/new
   def new
-    @ztask = Ztask.new
+    @ztask = @zproject.ztask.new
   end
 
   # GET /ztasks/1/edit
@@ -24,11 +20,11 @@ class ZtasksController < ApplicationController
   # POST /ztasks
   # POST /ztasks.json
   def create
-    @ztask = Ztask.new(ztask_params)
+    @ztask = @zproject.ztask.new(ztask_params)
 
     respond_to do |format|
       if @ztask.save
-        format.html { redirect_to @ztask, notice: 'Ztask was successfully created.' }
+        format.html { redirect_to [@zproject, @ztask], notice: 'Ztask was successfully created.' }
         format.json { render :show, status: :created, location: @ztask }
       else
         format.html { render :new }
@@ -42,7 +38,7 @@ class ZtasksController < ApplicationController
   def update
     respond_to do |format|
       if @ztask.update(ztask_params)
-        format.html { redirect_to @ztask, notice: 'Ztask was successfully updated.' }
+        format.html { redirect_to [@zproject, @ztask], notice: 'Ztask was successfully updated.' }
         format.json { render :show, status: :ok, location: @ztask }
       else
         format.html { render :edit }
@@ -56,7 +52,7 @@ class ZtasksController < ApplicationController
   def destroy
     @ztask.destroy
     respond_to do |format|
-      format.html { redirect_to ztasks_url, notice: 'Ztask was successfully destroyed.' }
+      format.html { redirect_to zproject_path(@zproject), notice: 'Ztask was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -64,9 +60,11 @@ class ZtasksController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_ztask
-      @ztask = Ztask.find(params[:id])
+      @ztask = @zproject.ztask.find(params[:id])
     end
-
+    def load_zproject
+      @zproject = Zproject.find(params[:zproject_id])
+    end
     # Never trust parameters from the scary internet, only allow the white list through.
     def ztask_params
       params.require(:ztask).permit(:name, :zproject_id)

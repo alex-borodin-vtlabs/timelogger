@@ -2,10 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "ztasks/show", type: :view do
   before(:each) do
-    @ztask = assign(:ztask, Ztask.create!(
-      :name => "Name",
-      :zproject_id => 1
-    ))
+    @ztask = FactoryGirl.create(:ztask)
+    @zproject = FactoryGirl.create(:zproject)
   end
 
   it "renders attributes in <p>" do
