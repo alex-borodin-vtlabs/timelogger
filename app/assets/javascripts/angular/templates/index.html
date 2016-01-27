@@ -1,0 +1,44 @@
+<h2>Projects <a href="#" class="btn btn-primary pull-right" ng-click="showCreateForm = !showCreateForm">New</a></h2>
+
+<!-- This will only show when there's no items to let the user know there's purposefully nothing there.. -->
+<div ng-show="projects.length == 0 && !showCreateForm">
+    <hr />
+    <h4>There's nothing here...</h4>
+    <p>Use the 'New' button to create a new project!</p>
+</div>
+
+<!-- A nice table that will contain a list of Forums -->
+<table class="table table-hover">
+    <tr ng-show="showCreateForm">
+    	<td>
+    		<form role="form" name="createForm" class="form-inline" ng-submit="create(project)" novalidate>
+  				<div class="form-group">
+    				<input ng-model="project.title" name="title" type="text" class="form-control" required>
+  				</div>
+  				
+			</form>
+    	</td>
+    	<td>
+    		<a href="#" class="btn btn-success" ng-click="create(project)"><i class="glyphicon glyphicon-ok"></i></a>
+    	</td>
+    	<td>
+    		<a href="#" class="btn btn-danger" ng-click="showCreateForm = !showCreateForm"><i class="glyphicon glyphicon-remove"></i></a>
+    	</td>
+    </tr>
+    <!-- This will create a row for every item within our items object (both of these refer to the forums -->
+    <tr ng-repeat="project in projects">
+        <td><a href="/projects/{{project.id}}" ng-show="!project.updating">{{project.title}}</a>
+    		<form role="form" name="updateForm_{{$index}}" ng-show="project.updating" class="form-inline" ng-submit="update($index)" novalidate>
+  				<div class="form-group">
+    				<input ng-model="project.title" name="title" type="text" class="form-control" required>
+  				</div>
+  				
+			</form>        	
+        </td>
+        <td><a ng-click="project.updating = !project.updating" ng-show="!project.updating" href="#" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
+        	<a ng-click="update($index)" ng-show="project.updating" href="#" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i></a>
+        </td>
+        <!-- When the user clicks this button it will call the 'destory()' method within the controller -->
+        <td><a ng-click="destroy($index)" href="#" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i></a></td>
+    </tr>
+</table>

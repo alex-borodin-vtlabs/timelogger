@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" ng-app="app">
 <head>
-  <title>Timelogger</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
+  <title>Time Logger</title>
+  <base href="/">
+  <%= stylesheet_link_tag "application", :media => "all" %>
+
+
 </head>
 <body>
-
-<%= yield %>
-
+<div class="container">
+  <div ng-view></div>
+</div>
+  <%= javascript_include_tag "application" %>
 </body>
 </html>

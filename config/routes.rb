@@ -1,8 +1,14 @@
 Rails.application.routes.draw do
-  root 'zprojects#index'
-  resources :zprojects do
-  	resources :ztasks, except: [:index]
+  
+  scope '/api', defaults: { format: 'json' } do
+  	resources :projects, except: [:new, :edit] do
+        resources :tasks, defaults: {format: 'json'}
+    end
   end
+  get "/*path" => 'application#index'
+  root to: 'application#index'
+
+  
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
