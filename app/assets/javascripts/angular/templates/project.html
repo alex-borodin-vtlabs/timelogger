@@ -35,6 +35,13 @@
   				
 			</form>        	
         </td>
+        <td>
+            {{task.duration}}
+        </td>
+        <td>
+             <a ng-click="play($index)" ng-show="!task.playing" href="#" class="btn btn-success"><i class="glyphicon glyphicon-play"></i></a>
+            <a ng-click="stop($index)" ng-show="task.playing" href="#" class="btn btn-danger"><i class="glyphicon glyphicon-stop"></i></a>           
+        </td>
         <td><a ng-click="task.updating = !task.updating" ng-show="!task.updating" href="#" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
         	<a ng-click="update($index)" ng-show="task.updating" href="#" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i></a>
         </td>

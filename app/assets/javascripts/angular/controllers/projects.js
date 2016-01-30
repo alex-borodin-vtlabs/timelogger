@@ -4,6 +4,9 @@ angular.module('app').controller('ProjectIndexController', function($scope, Proj
     $scope.projects = Project.query();
 	$scope.showCreateForm = false;
 	$scope.project = new Project();
+
+
+
     //Destroy method for deleting a project
     $scope.destroy = function(index) {
         //Tell the server to remove the object
@@ -36,13 +39,39 @@ angular.module('app').controller('ProjectIndexController', function($scope, Proj
 		}
 	}; 
 });
-angular.module('app').controller('ProjectShowController', function($scope, Project, Task, $routeParams) {
+angular.module('app').controller('ProjectShowController', function($scope, $interval, Project, Task, Interval, $routeParams) {
 
     //Grab all forums from the server
     $scope.project = Project.get({id: $routeParams.id});
     $scope.tasks = Task.query({project_id: $routeParams.id});
     $scope.showCreateForm = false;
     $scope.task = new Task({project_id: $routeParams.id});
+
+    $scope.play = function(index) {
+        $scope.tasks[index].playing = true;
+        $scope.tasks[index].startTime = new Date();
+        $scope.tasks[index].player = $interval(function() {
+            var now = new Date();
+            var diff = now.getTime() - $scope.tasks[index].startTime; 
+            $scope.tasks[index].duration = diff;
+        }, 1000);
+
+    }
+    $scope.stop = function(index) {
+        $scope.tasks[index].playing = false;
+        $scope.tasks[index].endTime = new Date();
+        console.log("endtime: " +  $scope.tasks[index].endTime);
+        $interval.cancel($scope.tasks[index].player); 
+        var interval = new Interval({project_id: $routeParams.id, 
+                                        task_id: $scope.tasks[index].id, 
+                                        intrvlbegin: $scope.tasks[index].startTime, 
+                                        intrvlend: $scope.tasks[index].endTime});
+        interval.$save(interval, function(response) {
+            console.log(response);
+        });
+        
+    }
+
     //Destroy method for deleting a project
     $scope.destroy = function(index) {
         //Tell the server to remove the object

@@ -12,3 +12,10 @@ angular.module("app").factory('Task', function TaskFactory($resource) {
 		}
     	});
 });
+angular.module("app").factory('Interval', function IntervalFactory($resource) {
+    return $resource('/api/projects/:project_id/tasks/:task_id/intervals/:id', {project_id: '@project_id', task_id: '@task_id', id: '@id'},{
+		update: {
+			method: "PUT"
+		}
+    	});
+});

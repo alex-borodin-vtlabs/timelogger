@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
   
+
   scope '/api', defaults: { format: 'json' } do
   	resources :projects, except: [:new, :edit] do
-        resources :tasks, defaults: {format: 'json'}
+        resources :tasks, except: [:new, :edit] do
+            resources :intervals, except: [:new, :edit]          
+        end
     end
   end
   get "/*path" => 'application#index'
