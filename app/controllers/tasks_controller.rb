@@ -5,9 +5,9 @@
   # GET /tasks.json
   def index
     @project = Project.find(params[:project_id])
-    @tasks = @project.tasks.all
+    @tasks = @project.tasks.all.includes(:intervals)
     respond_to do |format|
-      format.json { render json:  @tasks.order("updated_at desc")}
+      format.json { render json:  @tasks.order("updated_at desc").to_json( include: { intervals: {} })}
     end
   end
 
@@ -15,7 +15,7 @@
   # GET /tasks/1.json
   def show
     respond_to do |format|
-      format.json { render json:  @task}
+      format.json { render json:  @task.to_json( include: { intervals: {} })}
     end
   end
 
@@ -28,7 +28,7 @@
 
     respond_to do |format|
       if @task.save
-        format.json { render json: @task, status: :created}
+        format.json { render json: @task.to_json( include: { intervals: {} }), status: :created}
       else
         format.json { render json: {errors: @task.errors, status: 'error'}, status: :unprocessable_entity }
       end
@@ -40,7 +40,7 @@
    def update
     respond_to do |format|
       if @task.update(task_params)
-        format.json { render json: @task, status: :ok}
+        format.json { render json: @task.to_json( include: { intervals: {} }), status: :ok}
       else
         format.json { render json: {errors: @task.errors, status: 'error'}, status: :unprocessable_entity }
       end
@@ -60,7 +60,7 @@
     # Use callbacks to share common setup or constraints between actions.
     def set_task
       @project = Project.find(params[:project_id])
-      @task = @project.tasks.find(params[:id])
+      @task = @project.tasks.includes(:intervals).find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

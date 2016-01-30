@@ -1,7 +1,10 @@
-angular.module('app').controller('ProjectIndexController', function($scope, Project) {
+angular.module('app').controller('ProjectIndexController', function($scope, Project, TimeHelper) {
 
     //Grab all forums from the server
-    $scope.projects = Project.query();
+    $scope.projects = Project.query(function() {
+        TimeHelper.setProjectsTime($scope.projects);
+
+    });
 	$scope.showCreateForm = false;
 	$scope.project = new Project();
 
@@ -39,61 +42,76 @@ angular.module('app').controller('ProjectIndexController', function($scope, Proj
 		}
 	}; 
 });
-angular.module('app').controller('ProjectShowController', function($scope, $interval, Project, Task, Interval, $routeParams) {
+angular.module('app').controller('ProjectShowController', function($scope, $interval, Project, Task, Interval, $routeParams, TimeHelper) {
 
     //Grab all forums from the server
-    $scope.project = Project.get({id: $routeParams.id});
-    $scope.tasks = Task.query({project_id: $routeParams.id});
+    $scope.project = Project.get({id: $routeParams.id}, function() {
+        TimeHelper.setTasksTime($scope.project.tasks);
+
+    });
     $scope.showCreateForm = false;
     $scope.task = new Task({project_id: $routeParams.id});
 
     $scope.play = function(index) {
-        $scope.tasks[index].playing = true;
-        $scope.tasks[index].startTime = new Date();
-        $scope.tasks[index].player = $interval(function() {
+        var task = $scope.project.tasks[index];
+        task.playing = true;
+        task.startTime = new Date();
+        task.player = $interval(function() {
             var now = new Date();
-            var diff = now.getTime() - $scope.tasks[index].startTime; 
-            $scope.tasks[index].duration = diff;
+            var diff = now - task.startTime; 
+            task.duration = diff + task.currentDuration;
         }, 1000);
 
     }
     $scope.stop = function(index) {
-        $scope.tasks[index].playing = false;
-        $scope.tasks[index].endTime = new Date();
-        console.log("endtime: " +  $scope.tasks[index].endTime);
-        $interval.cancel($scope.tasks[index].player); 
+        var task = $scope.project.tasks[index];
+        task.playing = false;
+        task.endTime = new Date();
+
+        $interval.cancel(task.player); 
         var interval = new Interval({project_id: $routeParams.id, 
-                                        task_id: $scope.tasks[index].id, 
-                                        intrvlbegin: $scope.tasks[index].startTime, 
-                                        intrvlend: $scope.tasks[index].endTime});
+                                        task_id: task.id, 
+                                        intrvlbegin: task.startTime, 
+                                        intrvlend: task.endTime});
         interval.$save(interval, function(response) {
-            console.log(response);
+            $scope.project.tasks[index] = Task.get({project_id: $scope.project.id, id: task.id}, function() {
+                TimeHelper.setTasksTime($scope.project.tasks);
+
+            });
+
         });
         
     }
 
     //Destroy method for deleting a project
     $scope.destroy = function(index) {
+        var task = $scope.project.tasks[index];
         //Tell the server to remove the object
-        $scope.tasks[index].project_id = $routeParams.id;
-        $scope.task.$delete($scope.tasks[index], function() {
+        task.project_id = $routeParams.id;
+        $scope.task.$delete(task, function() {
             //If successful, remove it from our collection
-            $scope.tasks.splice(index, 1);
+            $scope.project.tasks.splice(index, 1);
         });
     
     }
 
     $scope.update = function(index) {
-        $scope.tasks[index].project_id = $routeParams.id;
-        $scope.tasks[index].$update($scope.tasks[index] ,function(response) {
-            $scope.tasks[index].updating = false;
+        var task = $scope.project.tasks[index];
+        var uTask = new Task({project_id: $scope.project.id, id: task.id, name: task.name});
+        uTask.$update(uTask ,function(response) {
+            task.updating = false;
+            TimeHelper.setTasksTime($scope.project.tasks);
+
         });
     }
     $scope.create = function(task) {
         if ($scope.createForm.$valid) {
+
             task.$save(task, function(response) {
+                    
                     $scope.showCreateForm = false;
-                    $scope.tasks.unshift(response);
+                    $scope.project.tasks.unshift(response);
+                    TimeHelper.setTasksTime($scope.project.tasks);
                     $scope.task = new Task({project_id: $routeParams.id});
                     $scope.createForm.$setUntouched();
                     $scope.createForm.$setPristine();           

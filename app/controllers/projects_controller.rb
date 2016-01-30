@@ -5,9 +5,9 @@ class ProjectsController < ApplicationController
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all
+    @projects = Project.all.includes(:tasks).includes(:intervals)
     respond_to do |format|
-  		format.json { render json:  @projects.order("updated_at desc")}
+  		format.json { render json:  @projects.order("updated_at desc").to_json(include: {tasks:{include:{intervals:{}}}})}
 	end
   end
 
@@ -15,7 +15,7 @@ class ProjectsController < ApplicationController
   # GET /projects/1.json
   def show
     respond_to do |format|
-  		format.json { render json:  @project}
+  		format.json { render json:  @project.to_json(include: {tasks:{include:{intervals:{}}}})}
 	end
   end
 
@@ -26,7 +26,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
-        format.json { render json: @project, status: :created}
+        format.json { render json: @project.to_json(include: {tasks:{include:{intervals:{}}}}), status: :created}
       else
         format.json { render json: {errors: @project.errors, status: 'error'}, status: :unprocessable_entity }
       end
@@ -38,7 +38,7 @@ class ProjectsController < ApplicationController
   def update
     respond_to do |format|
       if @project.update(project_params)
-        format.json { render json: @project, status: :ok}
+        format.json { render json: @project.to_json(include: {tasks:{include:{intervals:{}}}}), status: :ok}
       else
         format.json { render json: {errors: @project.errors, status: 'error'}, status: :unprocessable_entity }
       end
@@ -57,7 +57,7 @@ class ProjectsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_project
-      @project = Project.find(params[:id])
+      @project = Project.includes(:tasks).includes(:intervals).find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

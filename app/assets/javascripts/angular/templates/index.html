@@ -35,6 +35,9 @@
   				
 			</form>        	
         </td>
+        <td>
+            {{project.duration}}
+        </td>
         <td><a ng-click="project.updating = !project.updating" ng-show="!project.updating" href="#" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i></a>
         	<a ng-click="update($index)" ng-show="project.updating" href="#" class="btn btn-success"><i class="glyphicon glyphicon-ok"></i></a>
         </td>
