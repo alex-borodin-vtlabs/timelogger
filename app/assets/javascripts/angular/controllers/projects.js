@@ -21,8 +21,10 @@ angular.module('app').controller('ProjectIndexController', function($scope, Proj
     }
 
     $scope.update = function(index) {
-    	$scope.projects[index].$update($scope.projects[index] ,function(response) {
-			$scope.projects[index].updating = false;
+        var project = $scope.projects[index];
+        var uProject = new Project({id: project.id, title: project.title});
+    	uProject.$update(uProject ,function(response) {
+			project.updating = false;
     	});
     }
     $scope.create = function(project) {
@@ -60,6 +62,7 @@ angular.module('app').controller('ProjectShowController', function($scope, $inte
             var now = new Date();
             var diff = now - task.startTime; 
             task.duration = diff + task.currentDuration;
+            task.stringDuration = TimeHelper.msToTime(task.duration);
         }, 1000);
 
     }

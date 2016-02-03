@@ -1,4 +1,4 @@
-<h2>Project {{project.name}} <a href="#" class="btn btn-primary pull-right" ng-click="showCreateForm = !showCreateForm">New Task</a></h2>
+<h2><a href="/" class="btn btn-default back-button"><i class="glyphicon glyphicon-arrow-left"></i></a>Project {{project.title}}<a href="#" class="btn btn-primary pull-right" ng-click="showCreateForm = !showCreateForm">New Task</a></h2>
 
 <!-- This will only show when there's no items to let the user know there's purposefully nothing there.. -->
 <div ng-show="project.tasks.length == 0 && !showCreateForm">
@@ -27,7 +27,7 @@
     </tr>
     <!-- This will create a row for every item within our items object (both of these refer to the forums -->
     <tr ng-repeat="task in project.tasks">
-        <td><a href="/projects/{{project.id}}/tasks/{{task.id}}" ng-show="!task.updating">{{task.name}}</a>
+        <td><!--<a href="/projects/{{project.id}}/tasks/{{task.id}}" ng-show="!task.updating">{{task.name}}</a>--><span ng-show="!task.updating">{{task.name}}</span>
     		<form role="form" name="updateForm_{{$index}}" ng-show="task.updating" class="form-inline" ng-submit="update($index)" novalidate>
   				<div class="form-group">
     				<input ng-model="task.name" name="name" type="text" class="form-control" required>
@@ -36,7 +36,7 @@
 			</form>        	
         </td>
         <td>
-            {{task.duration}}
+            {{task.stringDuration}}
         </td>
         <td>
              <a ng-click="play($index)" ng-show="!task.playing" href="#" class="btn btn-success"><i class="glyphicon glyphicon-play"></i></a>
