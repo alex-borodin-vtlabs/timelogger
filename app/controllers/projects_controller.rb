@@ -1,11 +1,13 @@
 
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :update, :destroy]
+  before_action :correct_user,   except: [:index, :create]
 
   # GET /projects
   # GET /projects.json
   def index
-    @projects = Project.all.includes(:tasks).includes(:intervals)
+    @user = current_user
+    @projects = Project.where(user_id: @user.id).includes(:tasks).includes(:intervals)
     respond_to do |format|
   		format.json { render json:  @projects.order("updated_at desc").to_json(include: {tasks:{include:{intervals:{}}}})}
 	end
@@ -22,8 +24,9 @@ class ProjectsController < ApplicationController
   # POST /projects
   # POST /projects.json
   def create
+    @user = current_user
     @project = Project.new(project_params)
-
+    @project.user_id = @user.id
     respond_to do |format|
       if @project.save
         format.json { render json: @project.to_json(include: {tasks:{include:{intervals:{}}}}), status: :created}

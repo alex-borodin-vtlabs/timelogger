@@ -12,12 +12,14 @@ angular.module('app').controller('ProjectIndexController', function($scope, Proj
 
     //Destroy method for deleting a project
     $scope.destroy = function(index) {
+        var project = $scope.projects[index];
         //Tell the server to remove the object
-        $scope.project.$delete($scope.projects[index], function() {
+        var uProject = new Project({id: project.id, title: project.title});
+        uProject.$delete(uProject, function() {
             //If successful, remove it from our collection
             $scope.projects.splice(index, 1);
         });
-    
+
     }
 
     $scope.update = function(index) {
@@ -34,15 +36,15 @@ angular.module('app').controller('ProjectIndexController', function($scope, Proj
 					$scope.projects.unshift(response);
 					$scope.project = new Project();
      				$scope.createForm.$setUntouched();
-     				$scope.createForm.$setPristine();			
+     				$scope.createForm.$setPristine();
 		});
 		}
 		else
 		{
 
-     		$scope.createForm.title.$setDirty();			
+     		$scope.createForm.title.$setDirty();
 		}
-	}; 
+	};
 });
 angular.module('app').controller('ProjectShowController', function($scope, $interval, Project, Task, Interval, $routeParams, TimeHelper) {
 
@@ -60,7 +62,7 @@ angular.module('app').controller('ProjectShowController', function($scope, $inte
         task.startTime = new Date();
         task.player = $interval(function() {
             var now = new Date();
-            var diff = now - task.startTime; 
+            var diff = now - task.startTime;
             task.duration = diff + task.currentDuration;
             task.stringDuration = TimeHelper.msToTime(task.duration);
         }, 1000);
@@ -71,10 +73,10 @@ angular.module('app').controller('ProjectShowController', function($scope, $inte
         task.playing = false;
         task.endTime = new Date();
 
-        $interval.cancel(task.player); 
-        var interval = new Interval({project_id: $routeParams.id, 
-                                        task_id: task.id, 
-                                        intrvlbegin: task.startTime, 
+        $interval.cancel(task.player);
+        var interval = new Interval({project_id: $routeParams.id,
+                                        task_id: task.id,
+                                        intrvlbegin: task.startTime,
                                         intrvlend: task.endTime});
         interval.$save(interval, function(response) {
             $scope.project.tasks[index] = Task.get({project_id: $scope.project.id, id: task.id}, function() {
@@ -83,19 +85,19 @@ angular.module('app').controller('ProjectShowController', function($scope, $inte
             });
 
         });
-        
+
     }
 
     //Destroy method for deleting a project
     $scope.destroy = function(index) {
         var task = $scope.project.tasks[index];
+        var uTask = new Task({project_id: $scope.project.id, id: task.id, name: task.name});
         //Tell the server to remove the object
-        task.project_id = $routeParams.id;
-        $scope.task.$delete(task, function() {
+        uTask.$delete(uTask, function() {
             //If successful, remove it from our collection
             $scope.project.tasks.splice(index, 1);
         });
-    
+
     }
 
     $scope.update = function(index) {
@@ -111,20 +113,20 @@ angular.module('app').controller('ProjectShowController', function($scope, $inte
         if ($scope.createForm.$valid) {
 
             task.$save(task, function(response) {
-                    
+
                     $scope.showCreateForm = false;
                     $scope.project.tasks.unshift(response);
                     TimeHelper.setTasksTime($scope.project.tasks);
                     $scope.task = new Task({project_id: $routeParams.id});
                     $scope.createForm.$setUntouched();
-                    $scope.createForm.$setPristine();           
+                    $scope.createForm.$setPristine();
         });
         }
         else
         {
-            $scope.createForm.name.$setDirty();            
+            $scope.createForm.name.$setDirty();
         }
-    };  
+    };
 
 
 });

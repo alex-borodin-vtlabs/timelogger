@@ -1,10 +1,13 @@
 class IntervalsController < ApplicationController
+  before_action :set_project
+  before_action :set_task
+  before_action :correct_user
   before_action :set_interval, only: [:show, :edit, :update, :destroy]
 
   # GET /intervals
   # GET /intervals.json
   def index
-    @intervals = Interval.all
+    @intervals = @task.intervals.all
     respond_to do |format|
       format.json { render json:  @intervals.order("updated_at desc")}
     end
@@ -55,7 +58,6 @@ class IntervalsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_interval
       @interval = Interval.find(params[:id])
     end

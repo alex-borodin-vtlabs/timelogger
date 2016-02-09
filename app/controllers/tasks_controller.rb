@@ -1,10 +1,11 @@
   class TasksController < ApplicationController
+  before_action :set_project
+  before_action :correct_user
   before_action :set_task, only: [:show, :edit, :update, :destroy]
 
   # GET /tasks
   # GET /tasks.json
   def index
-    @project = Project.find(params[:project_id])
     @tasks = @project.tasks.all.includes(:intervals)
     respond_to do |format|
       format.json { render json:  @tasks.order("updated_at desc").to_json( include: { intervals: {} })}
@@ -19,13 +20,12 @@
     end
   end
 
- 
+
 
   # POST /tasks
   # POST /tasks.json
   def create
     @task = Task.new(task_params)
-
     respond_to do |format|
       if @task.save
         format.json { render json: @task.to_json( include: { intervals: {} }), status: :created}
@@ -57,12 +57,9 @@
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_task
-      @project = Project.find(params[:project_id])
       @task = @project.tasks.includes(:intervals).find(params[:id])
     end
-
     # Never trust parameters from the scary internet, only allow the white list through.
     def task_params
       params.require(:task).permit(:name, :type, :project_id)

@@ -1,5 +1,6 @@
 class Project < ActiveRecord::Base
 	has_many :tasks, dependent: :destroy
 	has_many :intervals, through: :tasks
-	validates_presence_of :title
+	belongs_to :user
+	validates_presence_of :title, :user_id
 end

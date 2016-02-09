@@ -1,15 +1,28 @@
 Rails.application.routes.draw do
   
 
-  scope '/api', defaults: { format: 'json' } do
+  
+
+  scope "/api", defaults: { format: "json" } do
   	resources :projects, except: [:new, :edit] do
         resources :tasks, except: [:new, :edit] do
             resources :intervals, except: [:new, :edit]          
         end
     end
   end
-  get "/*path" => 'application#index'
-  root to: 'application#index'
+
+  devise_for :users, controllers: {registrations: "registrations"}
+  get "/*path" => "application#index" 
+  authenticated :user do
+    root to: "application#index", :as => "app"
+  end
+  unauthenticated do
+    root to: "application#show", :as => "landing"
+  end
+
+
+
+
 
   
   # The priority is based upon order of creation: first created -> highest priority.

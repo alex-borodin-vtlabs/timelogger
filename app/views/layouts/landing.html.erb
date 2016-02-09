@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Timelord</title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<main class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="row">
+				<div class="col-xs-12">
+          <div class="pull-right">
+    				<% if user_signed_in? %>
+    	  			<%= link_to('Edit profile', edit_user_registration_path, target:  "_self", class:"btn btn-link") %>
+    				  <%= button_to('Logout', destroy_user_session_path, method: :delete, class:"btn btn-link", form_class: "pull-right") %>
+    				<% else %>
+    	  			<%= link_to('Login', new_user_session_path, class:"btn btn-link")  %>
+    	  			<%= link_to('Register', new_user_registration_path, class:"btn btn-link float-right")  %>
+    				<% end %>
+    			</div>
+				</div>
+			</div>
+      <% flash.each do |name, msg| %>
+          	<%= content_tag :div, msg, :id => "flash_#{name}" %>
+    	<% end %>  
+			<h1>HELLO!</h1>
+		</div>
+	</div>
+</main>
+
+</body>
+</html>
