@@ -3,8 +3,8 @@ angular.module("app").factory('TimeHelper', function TimeHelperFactory() {
 	findIntervalsTime: function(task) {
 		var timeArray = task.intervals.map(function(interval) {
 			return Date.parse(interval.intrvlend) - Date.parse(interval.intrvlbegin);
-		});	
-		return timeArray.reduce(function(a, b) { return a + b; }, 0);	
+		});
+		return timeArray.reduce(function(a, b) { return a + b; }, 0);
 	},
 	findTasksTime: function(project) {
 		var timeArray = project.tasks.map(function(task) {
@@ -31,7 +31,7 @@ angular.module("app").factory('TimeHelper', function TimeHelperFactory() {
 			project.duration = _this.findTasksTime(project);
 			project.stringDuration = _this.msToTime(project.duration);
 			return project;
-		});		
+		});
 	},
 	msToTime: function(duration) {
     var milliseconds = parseInt((duration%1000)/100)
@@ -49,24 +49,24 @@ angular.module("app").factory('TimeHelper', function TimeHelperFactory() {
 }
 	};
 });
-angular.module("app").factory("Project", function ProjectFactory($resource) {
+angular.module("app").factory("Project", ["$resource", function ProjectFactory($resource) {
 	return $resource("/api/projects/:id", {id: '@id'}, {
 		update: {
 			method: "PATCH"
 		}
 	});
-});
-angular.module("app").factory('Task', function TaskFactory($resource) {
+}]);
+angular.module("app").factory('Task', ["$resource", function TaskFactory($resource) {
     return $resource('/api/projects/:project_id/tasks/:id', {project_id: '@project_id', id: '@id'},{
 		update: {
 			method: "PATCH"
 		}
     	});
-});
-angular.module("app").factory('Interval', function IntervalFactory($resource) {
+}]);
+angular.module("app").factory('Interval', ["$resource", function IntervalFactory($resource) {
     return $resource('/api/projects/:project_id/tasks/:task_id/intervals/:id', {project_id: '@project_id', task_id: '@task_id', id: '@id'},{
 		update: {
 			method: "PATCH"
 		}
     	});
-});
+}]);

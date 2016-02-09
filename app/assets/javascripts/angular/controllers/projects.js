@@ -1,4 +1,4 @@
-angular.module('app').controller('ProjectIndexController', function($scope, Project, TimeHelper) {
+angular.module('app').controller('ProjectIndexController', ["$scope", "Project", "TimeHelper", function($scope, Project, TimeHelper) {
 
     //Grab all forums from the server
     $scope.projects = Project.query(function() {
@@ -45,8 +45,8 @@ angular.module('app').controller('ProjectIndexController', function($scope, Proj
      		$scope.createForm.title.$setDirty();
 		}
 	};
-});
-angular.module('app').controller('ProjectShowController', function($scope, $interval, Project, Task, Interval, $routeParams, TimeHelper) {
+}]);
+angular.module('app').controller('ProjectShowController', ["$scope", "$interval", "Project", "Task", "Interval", "$routeParams", "TimeHelper", function($scope, $interval, Project, Task, Interval, $routeParams, TimeHelper) {
 
     //Grab all forums from the server
     $scope.project = Project.get({id: $routeParams.id}, function() {
@@ -129,4 +129,4 @@ angular.module('app').controller('ProjectShowController', function($scope, $inte
     };
 
 
-});
+}]);
