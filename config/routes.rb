@@ -1,18 +1,18 @@
 Rails.application.routes.draw do
-  
 
-  
+
+
 
   scope "/api", defaults: { format: "json" } do
   	resources :projects, except: [:new, :edit] do
         resources :tasks, except: [:new, :edit] do
-            resources :intervals, except: [:new, :edit]          
+            resources :intervals, except: [:new, :edit]
         end
     end
   end
 
-  devise_for :users, controllers: {registrations: "registrations"}
-  get "/*path" => "application#index" 
+  devise_for :users, controllers: {registrations: "registrations", omniauth_callbacks: "omniauth_callbacks"}
+  get "/*path" => "application#index"
   authenticated :user do
     root to: "application#index", :as => "app"
   end
@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
 
 
-  
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
