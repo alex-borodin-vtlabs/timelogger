@@ -89,5 +89,5 @@ Rails.application.configure do
   password: 'lozhka18kakashek6',
   enable_starttls_auto: true
   }
-  config.secret_token = ENV['SECRET_TOKEN']
+
 end
