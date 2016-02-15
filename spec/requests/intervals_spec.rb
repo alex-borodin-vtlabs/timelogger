@@ -6,7 +6,7 @@ RSpec.describe "Intervals", type: :request do
     before(:each) do
       @attrs = FactoryGirl.attributes_for(:interval)
       @task= FactoryGirl.create(:task, id: @attrs[:task_id])
-      @project = FactoryGirl.create(:project, id: @task.project_id])
+      @project = FactoryGirl.create(:project, id: @task.project_id)
     end
 
     context "authorized" do
@@ -27,13 +27,14 @@ RSpec.describe "Intervals", type: :request do
       end
       it "gets wrong interval" do
         project = FactoryGirl.create(:project, user_id: @second_user.id)
+        task = FactoryGirl.create(:task, project_id: project.id)
         interval = FactoryGirl.create(:interval, task_id: task.id)
         get project_task_interval_path(project.id, task.id, interval.id), interval: interval.attributes
         expect(response).to have_http_status(403)
       end
       it "patchs interval" do
-        task = FactoryGirl.create(:interval)
-        patch project_task_path(@project.id, task.id, interval.id), interval: interval.attributes
+        interval = FactoryGirl.create(:interval)
+        patch project_task_interval_path(@project.id, @task.id, interval.id), interval: interval.attributes
         expect(response).to have_http_status(200)
       end
       it "patchs wrong interval" do
@@ -44,8 +45,8 @@ RSpec.describe "Intervals", type: :request do
         expect(response).to have_http_status(403)
       end
       it "puts interval" do
-        task = FactoryGirl.create(:interval)
-        put project_task_path(@project.id, task.id, interval.id), interval: interval.attributes
+        interval = FactoryGirl.create(:interval)
+        put project_task_interval_path(@project.id, @task.id, interval.id), interval: interval.attributes
         expect(response).to have_http_status(200)
       end
       it "puts wrong interval" do
