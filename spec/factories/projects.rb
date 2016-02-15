@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :project do
     user_id 1
-title "MyString"
+    title "MyString"
   end
 
 end

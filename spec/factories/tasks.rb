@@ -1,7 +1,8 @@
 FactoryGirl.define do
   factory :task do
     name "MyString"
-type ""
+    project_id 1
+    type ""
   end
 
 end

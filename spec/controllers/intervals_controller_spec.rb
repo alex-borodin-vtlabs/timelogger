@@ -52,21 +52,6 @@ RSpec.describe IntervalsController, type: :controller do
     end
   end
 
-  describe "GET #new" do
-    it "assigns a new interval as @interval" do
-      get :new, {}, valid_session
-      expect(assigns(:interval)).to be_a_new(Interval)
-    end
-  end
-
-  describe "GET #edit" do
-    it "assigns the requested interval as @interval" do
-      interval = Interval.create! valid_attributes
-      get :edit, {:id => interval.to_param}, valid_session
-      expect(assigns(:interval)).to eq(interval)
-    end
-  end
-
   describe "POST #create" do
     context "with valid params" do
       it "creates a new Interval" do

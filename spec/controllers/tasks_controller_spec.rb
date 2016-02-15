@@ -52,21 +52,6 @@ RSpec.describe TasksController, type: :controller do
     end
   end
 
-  describe "GET #new" do
-    it "assigns a new task as @task" do
-      get :new, {}, valid_session
-      expect(assigns(:task)).to be_a_new(Task)
-    end
-  end
-
-  describe "GET #edit" do
-    it "assigns the requested task as @task" do
-      task = Task.create! valid_attributes
-      get :edit, {:id => task.to_param}, valid_session
-      expect(assigns(:task)).to eq(task)
-    end
-  end
-
   describe "POST #create" do
     context "with valid params" do
       it "creates a new Task" do
